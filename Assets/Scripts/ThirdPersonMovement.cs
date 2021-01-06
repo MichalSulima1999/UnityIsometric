@@ -25,15 +25,22 @@ public class ThirdPersonMovement : MonoBehaviour
     private EQManager eqManager;
     private float staminaTime = 0f;
 
-    private Camera camera;
+    public Camera camera;
     private Vector3 worldPos;
+
+    private int revolverCount = 0;
+    private bool reloadRevolver = false;
+    public bool attackingrevolver = false;
+    public GameObject bullet;
+    private GameObject bulletSlot;
+    private Transform aim;
+    private bool alreadyAttacked = false;
 
     void Start()
     {
         mAnimator = GetComponent<Animator>();
         camCon = FindObjectOfType<CameraController>();
         eqManager = GetComponent<EQManager>();
-        camera = Camera.main;
     }
 
     // Update is called once per frame
@@ -42,7 +49,7 @@ public class ThirdPersonMovement : MonoBehaviour
         running = false;
         //attacking = false;
         if (canMove) {
-            if (!attacking) {
+            if (!attacking && !attackingrevolver) {
                 float horizontal = Input.GetAxisRaw("Horizontal");
                 float vertical = Input.GetAxisRaw("Vertical");
                 Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
@@ -61,16 +68,28 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
             }
 
-            if (Input.GetMouseButton(0) && eqManager.currentStamina >= 5 && eqManager.weaponEquiped) {
-                attacking = true;
+            if (Input.GetMouseButton(0)) {
                 LookAtMouse();
-                staminaTime += Time.deltaTime;
-                if(staminaTime >= 1f) {
-                    eqManager.StaminaUse(5);
-                    staminaTime = 0f;
-                }
+                if (eqManager.currentStamina >= 5 && eqManager.swordEquiped) {
+                    attacking = true;
+                    //LookAtMouse();
+                    staminaTime += Time.deltaTime;
+                    if (staminaTime >= 1f) {
+                        eqManager.StaminaUse(5);
+                        staminaTime = 0f;
+                    }
+                } else if (eqManager.revolverEquiped){
+                    if (!alreadyAttacked) {
+                        Shoot();
+
+                        alreadyAttacked = true;
+                        Invoke(nameof(ResetAttack), 0.5f);
+                    }
+
+                } 
             } else {
                 attacking = false;
+                attackingrevolver = false;
             }
         }
 
@@ -82,6 +101,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
         mAnimator.SetBool("running", running);
         mAnimator.SetBool("attacking", attacking);
+        mAnimator.SetBool("revolverShooting", attackingrevolver);
+        mAnimator.SetBool("revolverReload", reloadRevolver);
     }
 
     void LookAtMouse() {
@@ -90,6 +111,35 @@ public class ThirdPersonMovement : MonoBehaviour
         float angle = -Mathf.Atan2(v, h) * Mathf.Rad2Deg;
 
         transform.rotation = Quaternion.Euler(0, angle + 90, 0);
+    }
+
+    private void Shoot() {
+        if (revolverCount >= 6) {
+            reloadRevolver = true;
+            Invoke("Reload", 1.1f);
+        } else {
+            attackingrevolver = true;
+            revolverCount++;
+            GameObject bulletInstantiated = Instantiate(bullet, bulletSlot.transform.position, bulletSlot.transform.rotation);
+            bulletInstantiated.GetComponent<Weapon>().dmg = eqManager.revolverDmg;
+            bulletInstantiated.transform.LookAt(aim);
+            bulletInstantiated.GetComponent<Rigidbody>().AddForce(bulletInstantiated.transform.forward * 500);
+
+        }
+    }
+
+    private void Reload() {
+        revolverCount = 0;
+        reloadRevolver = false;
+    }
+
+    private void ResetAttack() {
+        alreadyAttacked = false;
+    }
+
+    public void FindAim() {
+        bulletSlot = GameObject.FindGameObjectWithTag("BulletSlot");
+        aim = GameObject.FindGameObjectWithTag("Aim").transform;
     }
 
     private void OnTriggerEnter(Collider other) {

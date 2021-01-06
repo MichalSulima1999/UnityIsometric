@@ -173,10 +173,6 @@ public class EnemyAI : MonoBehaviour
         alreadyAttacked = false;
     }
 
-    private void DestroyBullet(GameObject bullet) {
-        GameObject.Destroy(bullet);
-    }
-
     private void OnDrawGizmosSelected() {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);

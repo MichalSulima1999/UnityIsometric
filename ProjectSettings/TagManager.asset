@@ -12,6 +12,11 @@ TagManager:
   - Enemy
   - Bullet
   - Canvas
+  - Chestplate
+  - Helmet
+  - Legs armor
+  - BulletSlot
+  - Aim
   layers:
   - Default
   - TransparentFX

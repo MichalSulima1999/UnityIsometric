@@ -5,7 +5,24 @@ using UnityEngine;
 public class EQManager : MonoBehaviour
 {
     public bool weaponEquiped = false;
+    public bool revolverEquiped = false;
+    public bool swordEquiped = false;
     public GameObject eqWeapon;
+
+    public int revolverDmg;
+
+    public bool helmetEquiped = false;
+    public bool chestplateEquiped = false;
+    public bool legsEquiped = false;
+    public GameObject eqHelmet;
+    public GameObject eqChestplate;
+    public GameObject eqLegs;
+
+    public GameObject helmet;
+    public GameObject chestplate;
+    public GameObject legs;
+
+    private int armor;
 
     public int lvl;
     public int currentExp;
@@ -111,11 +128,19 @@ public class EQManager : MonoBehaviour
     }
 
     public void HpLoss(int amount) {
-        currentHp -= amount;
+        int loseHP = amount - armor;
+        if (loseHP <= 0)
+            loseHP = 1;
+
+        currentHp -= loseHP;
 
         if(currentHp <= 0) {
             currentHp = 0;
             gameObject.SetActive(false);
         }
+    }
+
+    public void SetArmor(int amount) {
+        armor += amount;
     }
 }

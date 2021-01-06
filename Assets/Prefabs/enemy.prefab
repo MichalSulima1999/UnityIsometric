@@ -505,7 +505,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2855841095412852015}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 34f1967d8d6f4d04bbbf060eb348b2b5, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 823e4e745b65ba9459b8951fd563793a, type: 3}
   m_Controller: {fileID: 9100000, guid: 5b6716df13458404d8cbff07b5bd0b6e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -551,6 +551,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 3125662560863131982}
   player: {fileID: 0}
+  playerCenter: {fileID: 0}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 512
@@ -564,6 +565,13 @@ MonoBehaviour:
   attackRange: 1.5
   playerInSightRange: 0
   playerInAttackRange: 0
+  bullet: {fileID: 0}
+  bulletSlot: {fileID: 0}
+  maxHP: 0
+  currentHP: 0
+  expToGive: 0
+  maxDrops: 0
+  enemyType: 0
 --- !u!1 &2876513916920769785
 GameObject:
   m_ObjectHideFlags: 0

@@ -25,7 +25,7 @@ public class Weapon : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player") && isEnemy) {
             other.GetComponent<EQManager>().HpLoss(dmg);
-        } else if(other.CompareTag("Enemy") && !isEnemy && playerMovement.attacking) {
+        } else if(other.CompareTag("Enemy") && !isEnemy && (playerMovement.attacking || playerMovement.attackingrevolver)) {
             // hurt enemy
             int critRand = Random.Range(1, 101);
             if (critRand <= eqM.critChance)
@@ -33,6 +33,7 @@ public class Weapon : MonoBehaviour
             else
                 dmgDealt = dmg + eqM.str;
 
+            
             other.GetComponent<EnemyAI>().HpLoss(dmgDealt);
             Vector3 screenPos = cam.WorldToScreenPoint(other.transform.position);
             var textIns = Instantiate(dmgText, screenPos, Quaternion.identity, GameObject.FindGameObjectWithTag("Canvas").transform);
